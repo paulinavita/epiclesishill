@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=medusa_db
+      - POSTGRES_USER=yourusername
+      - POSTGRES_PASSWORD=yourpassword
+    ports:
+      - 5432:5432
+  backend:
+    build:
+      context: ./eeppp
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file: ./eeppp/.env
+    ports:
+      - "9000:9000"
+  storefront:
+    build:
+      context: ./eeppp-storefront
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "8000:8000"
+volumes:
+  postgres-db:
